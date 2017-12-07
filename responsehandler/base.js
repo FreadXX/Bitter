@@ -70,8 +70,8 @@
 //          requestStart: 760.3520154953003,
 //          responseStart: 1370.8719611167908 } } }
 
-
 let handle = (response) => {
+    console.log(response);
     let result = {
         requestId: response.requestId,
         url: response.response.url,
