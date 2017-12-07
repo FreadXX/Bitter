@@ -2,6 +2,7 @@
 const path = require('path');
 const fs = require('fs');
 const EventEmitter = require('events');
+const args = require('args-parser')(process.argv);
 const CDP = require('chrome-remote-interface');
 
 const injector = require('./injector/injector.js');
@@ -11,11 +12,11 @@ const responseAnalysers = require('./responsehandler/responsehandler.js');
 const deviceKit = require('./devicekit.js');
 
 const options = {
-    chooseTab: process.argv[3],
+    chooseTab: args.wsurl,
     local: true
 }
-const resultDir = process.argv[4];
-const deviceSerial = process.argv[5];
+const resultDir = args.result;
+const deviceSerial = args.serial;
 
 // 从injector中获取需要启用的injector
 const injectors = injector.injectors;
@@ -28,11 +29,11 @@ let requestResult = [];
 let responseResult = [];
 event.on('request_new', function(result) {
     requestResult.push(result);
-    fs.writeFileSync(path.join(process.argv[4], 'request.json'), JSON.stringify(requestResult));
+    fs.writeFileSync(path.join(resultDir, 'request.json'), JSON.stringify(requestResult));
 });
 event.on('response_new', function(result) {
     responseResult.push(result);
-    fs.writeFileSync(path.join(process.argv[4], 'response.json'), JSON.stringify(responseResult));
+    fs.writeFileSync(path.join(resultDir, 'response.json'), JSON.stringify(responseResult));
 });
 
 let requestHandler = params => {
@@ -97,7 +98,7 @@ CDP(options, (client) => {
         // 访问指定url
         deviceKit.screenshot(deviceSerial, path.join(resultDir, 'h5_ready.png'));
         Page.navigate({
-            url: process.argv[2]
+            url: args.url
         })
     }).then(() => {
         Promise.all(events).then(() => {
