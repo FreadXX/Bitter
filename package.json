@@ -24,6 +24,9 @@
   },
   "homepage": "https://github.com/FreadXX/Bitter#readme",
   "dependencies": {
+    "args-parser": "^1.1.0",
+    "chrome-remote-interface": "^0.25.4",
+    "extend": "^3.0.1",
     "idevicekit": "^0.2.7"
   }
 }
